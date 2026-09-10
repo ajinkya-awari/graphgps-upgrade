@@ -8,4 +8,3 @@ def test_seed_manifest_is_deterministic_and_hash_backed():
     assert first == second
     assert first.seed == 42
     assert len(first.manifest_hash) == 64
-

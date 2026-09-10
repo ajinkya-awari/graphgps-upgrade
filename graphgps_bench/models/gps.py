@@ -23,7 +23,14 @@ def _require_pyg():
 class GPSClassifier(nn.Module):
     """Graph-level classifier built from the selected PyG GPSConv API."""
 
-    def __init__(self, input_dim: int, hidden_dim: int, recipe: GPSRecipe) -> None:
+    def __init__(
+        self,
+        input_dim: int,
+        hidden_dim: int,
+        recipe: GPSRecipe,
+        *,
+        use_ogb_encoder: bool = False,
+    ) -> None:
         super().__init__()
         errors = recipe.validate()
         if errors:
@@ -36,8 +43,12 @@ class GPSClassifier(nn.Module):
             )
 
         GINConv, GPSConv, _ = _require_pyg()
+        from .encoders import build_node_encoder
+
         self.recipe = recipe
-        self.encoder = nn.Linear(input_dim + recipe.positional_dim, hidden_dim)
+        self.node_encoder = build_node_encoder(input_dim, hidden_dim, use_ogb_encoder)
+        self.encoder = nn.Linear(hidden_dim + recipe.positional_dim, hidden_dim)
+        self.use_ogb_encoder = use_ogb_encoder
         self.convs = nn.ModuleList()
         for _ in range(recipe.layers):
             local_mlp = nn.Sequential(
@@ -62,12 +73,13 @@ class GPSClassifier(nn.Module):
         payload["interface"] = "forward(x, edge_index, edge_attr, batch) -> [B, 1]"
         payload["implementation"] = "torch_geometric.nn.GPSConv"
         payload["positional_encoding_scope"] = "graph-local Laplacian eigenvectors"
+        payload["node_encoder"] = "ogb.AtomEncoder" if self.use_ogb_encoder else "linear"
         return payload
 
     def forward(self, x, edge_index, edge_attr, batch):
         del edge_attr
         _, _, global_mean_pool = _require_pyg()
-        x = x.float()
+        x = self.node_encoder(x.long() if self.use_ogb_encoder else x.float())
         pe = _laplacian_positional_features(
             edge_index=edge_index,
             batch=batch,

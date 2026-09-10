@@ -4,7 +4,7 @@ Project 12 is a fixture-first molecular graph benchmark scaffold that compares u
 
 ## Purpose
 
-The project is for engineers and researchers who need a small, inspectable starting point for a reproducible graph-level benchmark. The current release demonstrates graph batching, graph-local positional features, output-shape validation, deterministic fixtures, and fail-closed reporting rules. It does not report a molecular benchmark result.
+The project is for engineers and researchers who need a small, inspectable starting point for a reproducible graph-level benchmark. The release includes graph batching, graph-local positional features, uniform PyG baselines, an official OGB runner, output-shape validation, deterministic fixtures, and fail-closed reporting rules. It does not include a verified molecular benchmark result.
 
 ## Architecture
 
@@ -15,7 +15,9 @@ flowchart LR
     C --> D[GCN / GIN / GPSConv]
     D --> E[graph logits B x 1]
     E --> F[shape and finite-value contracts]
-    F --> G[local JSON or CSV records]
+    F --> G[official evaluator]
+    G --> H[raw per-seed JSON or CSV]
+    H --> I[aggregate JSON and figure]
 ```
 
 The GPS variant uses PyG `GPSConv` with `GINConv` local message passing, multi-head attention with one head, and graph-local Laplacian eigenvector features. The public forward contract is `forward(x, edge_index, edge_attr, batch) -> [B, 1]`.
@@ -37,23 +39,23 @@ python -m graphgps_bench.static_validation --root .
 python -m graphgps_bench.preflight --config configs/fixture.toml
 ```
 
-Verified locally on 2026-09-10: `41 passed`, exit code `0`. PyG emitted three deprecation warnings from its distributed and JIT compatibility layers; no test failed.
+Verified locally on 2026-09-10: `45 passed`, exit code `0`. PyG emitted three deprecation warnings from its distributed and JIT compatibility layers; no test failed.
 
 ## Kaggle synthetic validation
 
-The public notebook and runbook under `notebooks/` are provider-free and use no dataset sources, internet, GPU, weights, or checkpoints. Separately, the approved private Kaggle GPU smoke verified the same synthetic contracts with internet used only to install `torch-geometric==2.7.0`; it did not access OGB data or train. Stop at the approval gate before official benchmark work.
+The public notebook and runbook under `notebooks/` are approval-gated. The approved private synthetic GPU smoke verified the synthetic contracts with internet used only to install `torch-geometric==2.7.0`; it did not access OGB data or train. The official benchmark notebook is also gated and must run only in a private Kaggle session after explicit runtime approval.
 
 ## Future official benchmark
 
-The official `ogbg-molhiv` run is gated and has not been executed from this export. A future approved run must preserve the official scaffold split and evaluator, use equal data/optimizer/budget/seed protocols for GCN, GIN, and GPSConv, and retain raw per-seed ROC-AUC records before aggregation. No score, winner, or scientific comparison is included here.
+The official `ogbg-molhiv` run remains unverified. The runner preserves the official scaffold split and evaluator, uses equal data/optimizer/budget/seed protocols for GCN, GIN, and GPSConv, and retains raw per-seed ROC-AUC records before aggregation. The first private Kaggle attempt passed compile and 45 tests but failed before OGB access because of a notebook import-path issue; its one repair was rejected with HTTP 409. No score, winner, or scientific comparison is included here.
 
 ## Verified status
 
-- Implemented: offline TOML preflight, deterministic fixtures, GCN/GIN contracts, real PyG GPSConv adapter, graph-local Laplacian features, device selection guard, and fail-closed record aggregation.
-- Locally tested: 41 tests passed on CPU; compile, static validation, and preflight passed.
+- Implemented: offline TOML preflight, deterministic fixtures, real PyG GCN/GIN message passing, OGB categorical encoding, GPSConv adapter, graph-local Laplacian features, shared training/evaluation/checkpoint runner, raw-record aggregation, and figure generation.
+- Locally tested: 45 tests passed on CPU; compile, static validation, and preflight passed.
 - Kaggle-tested: approved private GPU synthetic smoke verified; sanitized evidence recorded privately.
 - Synthetic-only: all current model and report evidence.
-- Benchmark-pending: official OGB evaluation, training, raw metrics, and aggregate report.
+- Benchmark-pending: official OGB evaluation, training, raw metrics, checkpoints, and aggregate report.
 - GPU-pending: official GPU benchmark/training remains pending; synthetic GPU smoke is verified.
 - Public release: repository published with MIT licensing; official benchmark evidence remains pending.
 
@@ -79,6 +81,6 @@ datasets retain their own licenses and terms.
 
 ## Roadmap
 
-1. Diagnose the bounded Kaggle source-package update failure and record private synthetic evidence.
-2. Obtain separate approval for the official OGB runtime gate, GPU smoke, and bounded benchmark.
+1. Rerun the corrected official notebook under an updateable private Kaggle slug after the bounded HTTP 409 stop.
+2. Inspect official raw per-seed records, aggregate output, figure, and checkpoint provenance.
 3. Publish only measured results with complete provenance, limitations, and raw per-seed records.

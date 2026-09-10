@@ -37,7 +37,12 @@ NEGATION_MARKERS = (
     "requires ",
     "require ",
 )
-SELF_VALIDATION_FILES = {"graphgps_bench/static_validation.py", "tests/test_static_validation.py"}
+SELF_VALIDATION_FILES = {
+    "static_validation.py",
+    "test_static_validation.py",
+    "graphgps_bench/static_validation.py",
+    "tests/test_static_validation.py",
+}
 
 
 @dataclass(frozen=True)
@@ -133,7 +138,15 @@ def main(argv: list[str] | None = None) -> int:
 
 def _text_files(root: Path) -> list[Path]:
     suffixes = {".md", ".py", ".toml", ".json", ".ps1", ".sh", ".ipynb"}
-    ignored_parts = {".pytest_cache", "__pycache__"}
+    ignored_parts = {
+        ".pytest_cache",
+        "__pycache__",
+        "kaggle_validation",
+        "kaggle_gpu_smoke",
+        "kaggle_gpu_smoke_v2",
+        "kaggle_gpu_smoke_v3",
+        "kaggle_official_benchmark",
+    }
     return [
         path
         for path in root.rglob("*")

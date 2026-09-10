@@ -1,0 +1,28 @@
+task_name = "ogbg-molhiv"
+split = "scaffold"
+models = ["gcn", "gin", "gps"]
+seeds = [0, 1, 2]
+output_root = "outputs/kaggle-smoke"
+device = "cuda"
+allow_network = true
+allow_ogb_download = true
+allow_gpu = true
+allow_wandb = false
+
+[budget]
+epochs = 1
+batch_size = 32
+learning_rate = 0.001
+early_stopping_patience = 0
+
+[gps]
+positional_encoding = "laplacian_eigenvectors"
+positional_dim = 8
+local_layer = "GINConv"
+global_attention = "MultiheadAttention"
+hidden_dim = 64
+layers = 4
+dropout = 0.1
+
+[selected_versions]
+# Fill with exact versions observed in the approved Kaggle environment.

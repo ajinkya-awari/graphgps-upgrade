@@ -19,20 +19,29 @@ class RunRecord:
     fixture_only: bool
     checkpoint_path: str
     hardware: str
+    versions_json: str = "{}"
+    parameter_count: int = 0
+    duration_seconds: float = 0.0
+    best_epoch: int = 0
+    seed_manifest_hash: str = ""
 
     def validate(self) -> None:
         if self.metric_name != "rocauc":
             raise ValueError("metric_name must be rocauc")
-        if self.fixture_only is not True:
-            raise ValueError("local report contracts may only use fixture metrics")
-        if self.checkpoint_path:
+        if self.fixture_only is True and self.checkpoint_path:
             raise ValueError("fixture records must not reference checkpoints")
+        if self.fixture_only is True and self.parameter_count:
+            raise ValueError("fixture records must not reference parameter counts")
+        if self.fixture_only is False and not self.checkpoint_path:
+            raise ValueError("official records must reference a selected checkpoint")
         if self.split != "scaffold":
             raise ValueError("split must be scaffold")
         if self.task_name != "ogbg-molhiv":
             raise ValueError("task_name must be ogbg-molhiv")
         if not 0.0 <= float(self.metric_value) <= 1.0:
             raise ValueError("metric_value must be in [0, 1]")
+        if self.parameter_count < 0 or self.duration_seconds < 0 or self.best_epoch < 0:
+            raise ValueError("provenance counts and durations must be non-negative")
 
 
 def write_json_manifest(path: str | Path, records: Iterable[RunRecord]) -> None:
