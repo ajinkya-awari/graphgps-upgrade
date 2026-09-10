@@ -5,6 +5,7 @@ import pytest
 from graphgps_bench.static_validation import (
     StaticValidationResult,
     validate_forbidden_artifacts,
+    validate_kaggle_kernel_metadata,
     validate_no_cross_project_references,
     validate_notebook_approval_gates,
     validate_report_language,
@@ -31,6 +32,31 @@ def test_forbidden_artifact_scan_allows_approved_ignored_ogb_cache(tmp_path):
     (cache / "geometric_data_processed.pt").write_text("approved public dataset cache", encoding="utf-8")
 
     result = validate_forbidden_artifacts(tmp_path)
+
+    assert result.ok is True
+
+
+def test_kaggle_metadata_rejects_title_slug_mismatch(tmp_path):
+    metadata = tmp_path / "kernel-metadata.json"
+    metadata.write_text(
+        '{"id":"owner/requested-name","title":"Generated Name"}',
+        encoding="utf-8",
+    )
+
+    result = validate_kaggle_kernel_metadata(metadata)
+
+    assert result.ok is False
+    assert "generated-name" in result.findings[0]
+
+
+def test_kaggle_metadata_accepts_matching_title_slug(tmp_path):
+    metadata = tmp_path / "kernel-metadata.json"
+    metadata.write_text(
+        '{"id":"owner/generated-name","title":"Generated Name"}',
+        encoding="utf-8",
+    )
+
+    result = validate_kaggle_kernel_metadata(metadata)
 
     assert result.ok is True
 

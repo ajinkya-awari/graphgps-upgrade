@@ -4,7 +4,7 @@ Project 12 is a fixture-first molecular graph benchmark scaffold that compares u
 
 ## Purpose
 
-The project is for engineers and researchers who need a small, inspectable starting point for a reproducible graph-level benchmark. The release includes graph batching, graph-local positional features, uniform PyG baselines, an official OGB runner, output-shape validation, deterministic fixtures, and fail-closed reporting rules. It does not include a verified molecular benchmark result.
+The project is for engineers and researchers who need a small, inspectable starting point for a reproducible graph-level benchmark. The release includes graph batching, graph-local positional features, uniform PyG baselines, an official OGB runner, output-shape validation, deterministic fixtures, and fail-closed reporting rules. A private one-epoch Kaggle run verifies the official benchmark path; a full-budget ablation remains pending.
 
 ## Architecture
 
@@ -39,25 +39,25 @@ python -m graphgps_bench.static_validation --root .
 python -m graphgps_bench.preflight --config configs/fixture.toml
 ```
 
-Verified locally on 2026-09-10: `45 passed`, exit code `0`. PyG emitted three deprecation warnings from its distributed and JIT compatibility layers; no test failed.
+Verified locally on 2026-09-11: `48 passed`, exit code `0`. PyG emitted three deprecation warnings from its distributed and JIT compatibility layers; no test failed.
 
 ## Kaggle synthetic validation
 
 The public notebook and runbook under `notebooks/` are approval-gated. The approved private synthetic GPU smoke verified the synthetic contracts with internet used only to install `torch-geometric==2.7.0`; it did not access OGB data or train. The official benchmark notebook is also gated and must run only in a private Kaggle session after explicit runtime approval.
 
-## Future official benchmark
+## Bounded official-path result
 
-The official `ogbg-molhiv` run remains unverified. The runner preserves the official scaffold split and evaluator, uses equal data/optimizer/budget/seed protocols for GCN, GIN, and GPSConv, and retains raw per-seed ROC-AUC records before aggregation. The first private Kaggle attempt passed compile and 45 tests but failed before OGB access because of a notebook import-path issue; its one repair was rejected with HTTP 409. No score, winner, or scientific comparison is included here.
+Private Kaggle kernel [`ajinkya1225/project-12-graphgps-official-ogb-benchmark`](https://www.kaggle.com/code/ajinkya1225/project-12-graphgps-official-ogb-benchmark) version 3 completed on a Tesla T4. It passed 48 pre-run tests, used the official `ogbg-molhiv` scaffold split and evaluator, and retained nine raw records across seeds 0, 1, and 2. Under the deliberately bounded one-epoch configuration, test ROC-AUC was GCN `0.6383 +/- 0.0181`, GIN `0.6007 +/- 0.0175`, and GPS `0.7052 +/- 0.0360` (mean +/- sample standard deviation). These measured values verify the runtime path; they are not a full-budget comparison and do not establish a general GraphGPS advantage.
 
 ## Verified status
 
 - Implemented: offline TOML preflight, deterministic fixtures, real PyG GCN/GIN message passing, OGB categorical encoding, GPSConv adapter, graph-local Laplacian features, shared training/evaluation/checkpoint runner, raw-record aggregation, and figure generation.
-- Locally tested: 45 tests passed on CPU; compile, static validation, and preflight passed.
-- Kaggle-tested: approved private GPU synthetic smoke verified; sanitized evidence recorded privately.
-- Synthetic-only: all current model and report evidence.
-- Benchmark-pending: official OGB evaluation, training, raw metrics, checkpoints, and aggregate report.
-- GPU-pending: official GPU benchmark/training remains pending; synthetic GPU smoke is verified.
-- Public release: repository published with MIT licensing; official benchmark evidence remains pending.
+- Locally tested: 48 tests passed on CPU; compile, static validation, and preflight passed.
+- Kaggle-tested: private Tesla T4 version 3 completed with official OGB loading, training, evaluation, records, and aggregation.
+- Benchmark evidence: one epoch, three seeds per model, official scaffold split and evaluator.
+- Benchmark-pending: frozen full-budget ablation and scientific review.
+- GPU status: bounded official-path run and synthetic smoke verified on Tesla T4.
+- Public release: repository published with MIT licensing; generated outputs and checkpoints remain private.
 
 ## Reproducibility and safety
 
@@ -81,6 +81,6 @@ datasets retain their own licenses and terms.
 
 ## Roadmap
 
-1. Rerun the corrected official notebook under an updateable private Kaggle slug after the bounded HTTP 409 stop.
-2. Inspect official raw per-seed records, aggregate output, figure, and checkpoint provenance.
-3. Publish only measured results with complete provenance, limitations, and raw per-seed records.
+1. Obtain separate approval for the frozen full-budget ablation.
+2. Review full-budget raw records and checkpoint provenance before drawing a scientific comparison.
+3. Publish only measured results with complete provenance and limitations.

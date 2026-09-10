@@ -2,7 +2,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from graphgps_bench.training.loop import seed_everything, train_one_epoch
+from graphgps_bench.training.loop import predict, seed_everything, train_one_epoch
 
 
 torch = pytest.importorskip("torch")
@@ -52,3 +52,13 @@ def test_train_one_epoch_returns_finite_loss_and_step_count():
     assert result.steps == 1
     assert result.examples == 2
     assert torch.isfinite(torch.tensor(result.loss))
+
+
+def test_predict_preserves_single_task_column_shape():
+    model = _TinyModel()
+    batches = [_Batch([[0.0], [1.0]], [0.0, 1.0])]
+
+    y_true, y_pred = predict(model, batches, torch.device("cpu"))
+
+    assert y_true.shape == (2, 1)
+    assert y_pred.shape == (2, 1)

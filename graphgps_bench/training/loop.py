@@ -101,8 +101,9 @@ def predict(model, loader: Iterable, device):
             if not bool(mask.any()):
                 continue
             logits = model(batch.x, batch.edge_index, batch.edge_attr, batch.batch).view(-1, 1)
-            labels.append(target[mask].detach().cpu())
-            predictions.append(torch.sigmoid(logits[mask]).detach().cpu())
+            valid_rows = mask.view(-1)
+            labels.append(target[valid_rows].detach().cpu())
+            predictions.append(torch.sigmoid(logits[valid_rows]).detach().cpu())
     if not labels:
         raise RuntimeError("evaluation loader produced no valid labels")
     return torch.cat(labels, dim=0), torch.cat(predictions, dim=0)

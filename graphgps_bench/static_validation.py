@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable
@@ -62,6 +63,25 @@ def validate_forbidden_artifacts(root: str | Path) -> StaticValidationResult:
         and not _is_under_approved_artifact_root(path.relative_to(root))
     ]
     return StaticValidationResult("forbidden_artifacts", not findings, tuple(findings))
+
+
+def validate_kaggle_kernel_metadata(path: str | Path) -> StaticValidationResult:
+    path = Path(path)
+    metadata = json.loads(path.read_text(encoding="utf-8"))
+    kernel_id = str(metadata.get("id", ""))
+    title = str(metadata.get("title", ""))
+    expected_slug = re.sub(r"[^a-z0-9]+", "-", title.casefold()).strip("-")
+    actual_slug = kernel_id.rsplit("/", maxsplit=1)[-1]
+    findings: list[str] = []
+    if not kernel_id or "/" not in kernel_id:
+        findings.append("kernel metadata id must use owner/slug format")
+    if not title:
+        findings.append("kernel metadata title is required")
+    if title and actual_slug != expected_slug:
+        findings.append(
+            f"kernel id slug '{actual_slug}' does not match title-derived slug '{expected_slug}'"
+        )
+    return StaticValidationResult("kaggle_kernel_metadata", not findings, tuple(findings))
 
 
 def validate_no_cross_project_references(
@@ -146,6 +166,7 @@ def _text_files(root: Path) -> list[Path]:
         "kaggle_gpu_smoke_v2",
         "kaggle_gpu_smoke_v3",
         "kaggle_official_benchmark",
+        "kaggle_official_benchmark_run",
     }
     return [
         path
