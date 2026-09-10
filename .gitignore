@@ -2,10 +2,10 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 .venv/
-data/
-datasets/
-outputs/
-results/
-checkpoints/
-wandb/
+/data/
+/datasets/
+/outputs/
+/results/
+/checkpoints/
+/wandb/
 .env
