@@ -140,7 +140,10 @@ def test_select_device_accepts_explicit_cpu_without_fallback():
     assert str(select_device("cpu")) == "cpu"
 
 
-def test_select_device_rejects_unavailable_cuda_instead_of_falling_back():
+def test_select_device_rejects_unavailable_cuda_instead_of_falling_back(monkeypatch):
+    import torch
+
+    monkeypatch.setattr(torch.cuda, "is_available", lambda: False)
     if select_device("cpu").type != "cpu":
         pytest.fail("explicit CPU selection did not resolve to CPU")
     with pytest.raises(RuntimeError, match="CUDA device requested but unavailable"):
