@@ -55,7 +55,7 @@ The official `ogbg-molhiv` run is gated and has not been executed from this expo
 - Synthetic-only: all current model and report evidence.
 - Benchmark-pending: official OGB evaluation, training, raw metrics, and aggregate report.
 - GPU-pending: no GPU execution has been performed.
-- Blocked: Kaggle evidence, official benchmark evidence, and GitHub publication workflow remain pending.
+- Public release: repository published with MIT licensing; Kaggle evidence and official benchmark evidence remain pending.
 
 ## Reproducibility and safety
 
