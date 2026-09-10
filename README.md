@@ -41,7 +41,7 @@ Verified locally on 2026-09-10: `41 passed`, exit code `0`. PyG emitted three de
 
 ## Kaggle synthetic validation
 
-The notebook and runbook under `notebooks/` are provider-free and use no dataset sources, internet, GPU, weights, or checkpoints. Push only a source-only package with a private kernel metadata file, then run the environment check, compile check, synthetic tests, bounded GPSConv smoke test, and sanitized evidence JSON. Stop at the approval gate before OGB access, GPU work, or training.
+The public notebook and runbook under `notebooks/` are provider-free and use no dataset sources, internet, GPU, weights, or checkpoints. Separately, the approved private Kaggle GPU smoke verified the same synthetic contracts with internet used only to install `torch-geometric==2.7.0`; it did not access OGB data or train. Stop at the approval gate before official benchmark work.
 
 ## Future official benchmark
 
@@ -51,11 +51,11 @@ The official `ogbg-molhiv` run is gated and has not been executed from this expo
 
 - Implemented: offline TOML preflight, deterministic fixtures, GCN/GIN contracts, real PyG GPSConv adapter, graph-local Laplacian features, device selection guard, and fail-closed record aggregation.
 - Locally tested: 41 tests passed on CPU; compile, static validation, and preflight passed.
-- Kaggle-tested: pending sanitized provider-free run evidence.
+- Kaggle-tested: approved private GPU synthetic smoke verified; sanitized evidence recorded privately.
 - Synthetic-only: all current model and report evidence.
 - Benchmark-pending: official OGB evaluation, training, raw metrics, and aggregate report.
-- GPU-pending: no GPU execution has been performed.
-- Public release: repository published with MIT licensing; Kaggle evidence and official benchmark evidence remain pending.
+- GPU-pending: official GPU benchmark/training remains pending; synthetic GPU smoke is verified.
+- Public release: repository published with MIT licensing; official benchmark evidence remains pending.
 
 ## Reproducibility and safety
 
