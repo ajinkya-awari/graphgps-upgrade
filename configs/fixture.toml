@@ -1,0 +1,27 @@
+task_name = "ogbg-molhiv"
+split = "scaffold"
+models = ["gcn", "gin", "gps"]
+seeds = [0, 1, 2]
+output_root = "outputs/fixture"
+device = "cpu"
+allow_network = false
+allow_ogb_download = false
+allow_gpu = false
+allow_wandb = false
+
+[budget]
+epochs = 1
+batch_size = 2
+learning_rate = 0.001
+early_stopping_patience = 0
+
+[gps]
+positional_encoding = "laplacian_eigenvectors_fixture_contract"
+positional_dim = 4
+local_layer = "GINConv"
+global_attention = "MultiheadAttention"
+hidden_dim = 16
+layers = 2
+dropout = 0.0
+
+[selected_versions]
