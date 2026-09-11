@@ -49,12 +49,10 @@ def test_kaggle_metadata_rejects_title_slug_mismatch(tmp_path):
     assert "generated-name" in result.findings[0]
 
 
-def test_kaggle_metadata_accepts_matching_title_slug(tmp_path):
-    metadata = tmp_path / "kernel-metadata.json"
-    metadata.write_text(
-        '{"id":"owner/generated-name","title":"Generated Name"}',
-        encoding="utf-8",
-    )
+def test_official_kaggle_metadata_targets_existing_kernel():
+    metadata = ROOT / "kernel-metadata.json"
+    if not metadata.exists():
+        metadata = ROOT / "kaggle_official_benchmark" / "kernel-metadata.json"
 
     result = validate_kaggle_kernel_metadata(metadata)
 
@@ -76,6 +74,18 @@ def test_cross_project_scan_allows_documented_historical_handover_reference():
 
     assert isinstance(result, StaticValidationResult)
     assert result.ok is True
+
+
+def test_static_scans_ignore_generated_full_ablation_bundle(tmp_path):
+    bundle = tmp_path / "kaggle_full_ablation"
+    bundle.mkdir()
+    (bundle / "copied_test.py").write_text(
+        "See ../portfolio-projects and claim SOTA.\n",
+        encoding="utf-8",
+    )
+
+    assert validate_no_cross_project_references(tmp_path).ok is True
+    assert validate_report_language(tmp_path).ok is True
 
 
 def test_report_language_scan_rejects_unsupported_claim_phrases(tmp_path):

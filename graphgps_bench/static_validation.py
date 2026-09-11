@@ -167,6 +167,7 @@ def _text_files(root: Path) -> list[Path]:
         "kaggle_gpu_smoke_v3",
         "kaggle_official_benchmark",
         "kaggle_official_benchmark_run",
+        "kaggle_full_ablation",
     }
     return [
         path

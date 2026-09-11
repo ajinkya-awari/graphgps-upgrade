@@ -1,0 +1,13 @@
+{
+  "id": "ajinkya1225/project-12-graphgps-full-budget-ablation",
+  "title": "Project 12 GraphGPS Full Budget Ablation",
+  "code_file": "kaggle_graphgps_full_ablation.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_internet": true,
+  "dataset_sources": [],
+  "competition_sources": [],
+  "kernel_sources": []
+}

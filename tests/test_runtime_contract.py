@@ -1,7 +1,12 @@
+from pathlib import Path
+
 import pytest
 
-from graphgps_bench.config import from_mapping
+from graphgps_bench.config import from_mapping, load_config
 from graphgps_bench.reporting import RunRecord
+
+
+ROOT = Path(__file__).resolve().parents[1]
 
 
 def _runtime_config(**overrides):
@@ -58,3 +63,18 @@ def test_runtime_config_requires_all_external_approval_flags():
 
     with pytest.raises(ValueError, match="allow_gpu"):
         validate_runtime_config(config)
+
+
+def test_full_ablation_config_matches_approved_frozen_budget():
+    config = load_config(ROOT / "configs" / "kaggle_ablation.toml")
+
+    assert config.models == ("gcn", "gin", "gps")
+    assert config.seeds == (0, 1, 2)
+    assert config.budget.epochs == 30
+    assert config.budget.batch_size == 32
+    assert config.budget.learning_rate == 0.001
+    assert config.budget.early_stopping_patience == 5
+    assert config.allow_network is True
+    assert config.allow_ogb_download is True
+    assert config.allow_gpu is True
+    assert config.allow_wandb is False

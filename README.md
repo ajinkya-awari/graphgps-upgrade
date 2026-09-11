@@ -4,7 +4,7 @@ Project 12 is a fixture-first molecular graph benchmark scaffold that compares u
 
 ## Purpose
 
-The project is for engineers and researchers who need a small, inspectable starting point for a reproducible graph-level benchmark. The release includes graph batching, graph-local positional features, uniform PyG baselines, an official OGB runner, output-shape validation, deterministic fixtures, and fail-closed reporting rules. A private one-epoch Kaggle run verifies the official benchmark path; a full-budget ablation remains pending.
+The project is for engineers and researchers who need a small, inspectable starting point for a reproducible graph-level benchmark. The release includes graph batching, graph-local positional features, uniform PyG baselines, an official OGB runner, output-shape validation, deterministic fixtures, and fail-closed reporting rules. A private 30-epoch-budget Kaggle ablation verifies the complete frozen benchmark workflow.
 
 ## Architecture
 
@@ -39,23 +39,23 @@ python -m graphgps_bench.static_validation --root .
 python -m graphgps_bench.preflight --config configs/fixture.toml
 ```
 
-Verified locally on 2026-09-11: `48 passed`, exit code `0`. PyG emitted three deprecation warnings from its distributed and JIT compatibility layers; no test failed.
+Verified locally on 2026-09-11: `50 passed`, exit code `0`. PyG emitted three deprecation warnings from its distributed and JIT compatibility layers; no test failed.
 
 ## Kaggle synthetic validation
 
-The public notebook and runbook under `notebooks/` are approval-gated. The approved private synthetic GPU smoke verified the synthetic contracts with internet used only to install `torch-geometric==2.7.0`; it did not access OGB data or train. The official benchmark notebook is also gated and must run only in a private Kaggle session after explicit runtime approval.
+The public notebook and runbooks are approval-gated. The private synthetic GPU smoke verified the synthetic contracts without OGB data. The approved full-budget run used internet for documented dependencies and OGB access in a private T4 session. Keep datasets and checkpoints on Kaggle and retrieve only sanitized reports.
 
-## Bounded official-path result
+## Full-budget ablation result
 
-Private Kaggle kernel [`ajinkya1225/project-12-graphgps-official-ogb-benchmark`](https://www.kaggle.com/code/ajinkya1225/project-12-graphgps-official-ogb-benchmark) version 3 completed on a Tesla T4. It passed 48 pre-run tests, used the official `ogbg-molhiv` scaffold split and evaluator, and retained nine raw records across seeds 0, 1, and 2. Under the deliberately bounded one-epoch configuration, test ROC-AUC was GCN `0.6383 +/- 0.0181`, GIN `0.6007 +/- 0.0175`, and GPS `0.7052 +/- 0.0360` (mean +/- sample standard deviation). These measured values verify the runtime path; they are not a full-budget comparison and do not establish a general GraphGPS advantage.
+Private Kaggle kernel [`ajinkya1225/project-12-graphgps-full-budget-ablation`](https://www.kaggle.com/code/ajinkya1225/project-12-graphgps-full-budget-ablation) version 1 completed on a Tesla T4 in 3,785.76 seconds. It passed 49 pre-run tests and used the official `ogbg-molhiv` scaffold split/evaluator, a 30-epoch maximum, patience 5, batch size 32, Adam learning rate 0.001, no scheduler, and seeds 0, 1, and 2. Test ROC-AUC was GCN `0.6932 +/- 0.0081`, GIN `0.6982 +/- 0.0125`, and GPS `0.7482 +/- 0.0084` (mean +/- sample standard deviation). These measured values apply only to this frozen protocol and do not establish SOTA performance or a general GraphGPS advantage.
 
 ## Verified status
 
 - Implemented: offline TOML preflight, deterministic fixtures, real PyG GCN/GIN message passing, OGB categorical encoding, GPSConv adapter, graph-local Laplacian features, shared training/evaluation/checkpoint runner, raw-record aggregation, and figure generation.
-- Locally tested: 48 tests passed on CPU; compile, static validation, and preflight passed.
-- Kaggle-tested: private Tesla T4 version 3 completed with official OGB loading, training, evaluation, records, and aggregation.
-- Benchmark evidence: one epoch, three seeds per model, official scaffold split and evaluator.
-- Benchmark-pending: frozen full-budget ablation and scientific review.
+- Locally tested: 50 tests passed on CPU; compile, static validation, and preflight passed.
+- Kaggle-tested: private Tesla T4 full-budget version 1 completed with official OGB loading, training, evaluation, records, and aggregation.
+- Benchmark evidence: maximum 30 epochs, three seeds per model, official scaffold split and evaluator.
+- Benchmark status: complete for the documented frozen protocol; broader scientific generalization is outside scope.
 - GPU status: bounded official-path run and synthetic smoke verified on Tesla T4.
 - Public release: repository published with MIT licensing; generated outputs and checkpoints remain private.
 
@@ -81,6 +81,4 @@ datasets retain their own licenses and terms.
 
 ## Roadmap
 
-1. Obtain separate approval for the frozen full-budget ablation.
-2. Review full-budget raw records and checkpoint provenance before drawing a scientific comparison.
-3. Publish only measured results with complete provenance and limitations.
+The documented Project 12 release scope is complete. Any future dataset, architecture, hyperparameter, or seed expansion is a new experiment and must use a separately frozen protocol.
