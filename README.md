@@ -1,3 +1,9 @@
+<div align="center">
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=0,14,20&height=200&section=header&text=GraphGPS%20Upgrade&fontSize=52&fontColor=fff&animation=twinkling&fontAlignY=38&desc=Fixture-first%20GCN%2FGIN%2FGraphGPS%20benchmark%20on%20ogbg-molhiv&descAlignY=58&descAlign=50&descSize=16" width="100%" />
+
+</div>
+
 # GraphGPS Upgrade
 
 <div align="center">
@@ -115,3 +121,9 @@ datasets retain their own licenses and terms.
 ## Roadmap
 
 The documented Project 12 release scope is complete. Any future dataset, architecture, hyperparameter, or seed expansion is a new experiment and must use a separately frozen protocol.
+
+<div align="center">
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=0,14,20&height=100&section=footer" width="100%" />
+
+</div>
