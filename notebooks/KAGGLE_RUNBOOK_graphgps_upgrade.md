@@ -1,5 +1,9 @@
 # Kaggle synthetic validation runbook
 
+## Full-Budget Release Outcome - 2026-09-11
+
+The separate approved full-budget kernel `ajinkya1225/project-12-graphgps-full-budget-ablation` version 1 completed on Tesla T4 after 49 packaged tests. This synthetic runbook remains the provider-free validation path; it is not necessary to rerun either kernel to complete the release.
+
 This package is source-only. It contains no dataset, weights, checkpoint, credentials, private evidence, or generated benchmark output.
 
 1. Check the private kernel metadata: `enable_gpu=false`, `enable_internet=false`, and all source lists are empty.

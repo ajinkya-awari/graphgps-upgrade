@@ -2,6 +2,8 @@
 
 Approved on 2026-09-11 for a private Tesla T4 run.
 
+Execution result: version 1 completed in 3,785.76 seconds after 49 packaged tests. Sanitized evidence is under `kaggle_full_ablation_evidence/`; no dataset or checkpoint was downloaded locally.
+
 - Task/split: `ogbg-molhiv`, official scaffold split and evaluator.
 - Models/seeds: GCN, GIN, GPS; seeds 0, 1, and 2.
 - Shared budget: maximum 30 epochs, batch size 32, Adam learning rate 0.001.
